@@ -1,11 +1,10 @@
 <template>
-  <div class="catalog">
-    <template v-if="goodsCategories">
-      <div v-for="goodsCategory in goodsCategories" :key="goodsCategory">
-        {{ goodsCategory.name }}
+  <div class="catalog w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
+    <div v-if="goodsCategories" class="flex flex-wrap">
+      <div v-for="goodsCategory in goodsCategories" :key="goodsCategory.id">
         <GoodsCategoryItem :goodsCategory="goodsCategory" />
       </div>
-    </template>
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="catalog-item">
+  <div class="catalog-item text-white">
     {{ good.name }}
   </div>
 </template>
