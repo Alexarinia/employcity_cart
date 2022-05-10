@@ -1,16 +1,16 @@
 <template>
 
   <div class="w-full p-3">
-      <!--Graph Card-->
       <div class="bg-gray-900 border border-gray-800 rounded shadow">
-          <div class="border-b border-gray-800 p-3">
-              <h5 class="font-bold uppercase text-gray-400">{{ goodsCategory.name }}</h5>
+          <div class="flex justify-center border-b border-gray-800 p-3"
+              @click="collapsed = !collapsed">
+              <h5 class="font-bold uppercase text-gray-200">{{ goodsCategory.name }}</h5>
+              <span class="font-bold text-3xl text-gray-600">2 <span class="text-yellow-600"><i class="fas fa-caret-down"></i></span></span>
           </div>
-          <div class="p-5">
+          <div class="p-5" :class="{ hidden: collapsed }">
             <GoodItem :good="good" v-for="good in goodsCategory.goods" :key="good.G + '_' + good.T" />
           </div>
       </div>
-      <!--/Graph Card-->
   </div>
 </template>
 
@@ -22,12 +22,13 @@ export default {
   components: {
       GoodItem
   },
+  data() {
+    return {
+      collapsed: false
+    }
+  },
   props: {
     goodsCategory: Object
-  },
-  mounted() {
-    console.log('goodsCategory');
-    console.log(this.goodsCategory);
   }
 }
 </script>

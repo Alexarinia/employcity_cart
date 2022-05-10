@@ -1,7 +1,9 @@
 <template>
   <div class="catalog w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
-    <div v-if="goodsCategories" class="flex flex-wrap">
-      <div v-for="goodsCategory in goodsCategories" :key="goodsCategory.id">
+    <div v-if="goodsCategories" class="flex flex-wrap items-start">
+      <div v-for="goodsCategory in goodsCategories"
+          :key="goodsCategory.id"
+           class="md:w-1/2">
         <GoodsCategoryItem :goodsCategory="goodsCategory" />
       </div>
     </div>
@@ -28,6 +30,7 @@ export default {
     msg: String
   },
   computed: {
+    // Собираем список товаров с сопоставленными параметрами
     goods() {
       if(this.goodsContainer && this.goodsContainer.Value && this.goodsContainer.Value.Goods) {
         return this.setGoodsNames(this.goodsContainer.Value.Goods);
@@ -35,6 +38,7 @@ export default {
         return [];
       }
     },
+    // Собираем список категорий товаров
     goodsCategories() {
       if(this.goods) {
         let categories = {};
@@ -50,14 +54,13 @@ export default {
 
           categories[good.G].goods.push(good);
         });
-        console.log('categories');
-      console.log(categories);
 
         return categories;
       } else {
         return [];
       }
     },
+    // Собираем список параметров товаров
     goodsNames() {
       if(this.goodsNamesContainer) {
         return this.goodsNamesContainer;
@@ -67,6 +70,7 @@ export default {
     }
   },
   methods: {
+    // Сопоставляем ID товара с группами и названиями
     setGoodsNames(goods) {
       goods.forEach((value) => {
         if(this.goodsNames[value.G]) {
@@ -84,28 +88,6 @@ export default {
 
       return goods;
     }
-  },
-  mounted() {
-    console.log(this.goods);
-      console.log(this.goodsNames);
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
