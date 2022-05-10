@@ -1,16 +1,34 @@
 <template>
+  <CatalogNavbar @toggleCart="toggleCart" />
   <div class="container w-full mx-auto pt-20 text-gray-800">
-    <GoodsCatalog msg="Welcome to Your Vue.js App"/>
+    <GoodsCatalog />
   </div>
+  <CatalogCart @toggleCart="toggleCart"
+               v-show="cartActive" />
 </template>
 
 <script>
-import GoodsCatalog from '@/components/GoodsCatalog.vue'
+import GoodsCatalog from '@/components/GoodsCatalog.vue';
+import CatalogCart from '@/components/Cart/CatalogCart';
+import CatalogNavbar from '@/components/CatalogNavbar';
 
 export default {
   name: 'App',
   components: {
-    GoodsCatalog
+    GoodsCatalog,
+    CatalogCart,
+    CatalogNavbar
+  },
+  data() {
+    return {
+      cartActive: false,
+      cartGoods: {}
+    };
+  },
+  methods: {
+    toggleCart() {
+      this.cartActive = !this.cartActive;
+    }
   }
 }
 </script>

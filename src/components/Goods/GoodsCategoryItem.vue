@@ -8,7 +8,7 @@
               <span class="font-bold text-3xl text-gray-600">2 <span class="text-yellow-600"><i class="fas fa-caret-down"></i></span></span>
           </div>
           <div class="p-5" :class="{ hidden: collapsed }">
-            <GoodItem :good="good" v-for="good in goodsCategory.goods" :key="good.G + '_' + good.T" />
+            <GoodItem :good="good" v-for="good in goodsCategory.goods" :key="good.uniqueId" />
           </div>
       </div>
   </div>
