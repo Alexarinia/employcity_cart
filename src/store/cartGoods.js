@@ -11,7 +11,7 @@ export const state = reactive({
             for(let key in state.cartGoods) {
                 let good = state.cartGoods[key];
                 if(good.quantity === 0) {
-                    good.remove();
+                    delete state.cartGoods[key];
                 }
             }
         }
@@ -22,7 +22,7 @@ export const state = reactive({
         if(Object.keys(state.cartGoods).length) {
             for(let key in state.cartGoods) {
                 let good = state.cartGoods[key];
-                totalPrice += good.unit.P * good.quantity;
+                totalPrice += good.unit.C * good.quantity;
             }
         }
 
@@ -62,9 +62,9 @@ export default function fetchCartGoods() {
     }
 
     // Удаление товара из корзины
-    const removeGoodFromCart = (good) => {
-        if(state.cartGoods[good.uniqueId]) {
-            --state.cartGoods[good.uniqueId].quantity;
+    const removeGoodFromCart = (uniqueId) => {
+        if(state.cartGoods[uniqueId]) {
+            state.cartGoods[uniqueId].quantity = 0;
         }
 
         state.checkEmptyGoodsInCart();

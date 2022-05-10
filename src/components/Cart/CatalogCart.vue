@@ -1,13 +1,12 @@
 <template>
     <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
-        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50" @click="clickCart"></div>
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
+            @click="clickCart"></div>
         
         <div class="modal-container bg-slate-600 text-gray-300 w-10/12 mx-auto rounded shadow-lg z-50 overflow-y-auto">
 
-            <!-- Add margin if you want to see some of the overlay behind the modal-->
             <div class="modal-content py-4 text-left px-6">
-                <!--Title-->
-                <div class="flex justify-between items-center pb-3">
+                <div class="flex justify-between items-center pb-3 border-b-2">
                     <p class="text-2xl font-bold">Корзина</p>
                     <div class="modal-close cursor-pointer z-50"
                         @click="clickCart">
@@ -17,42 +16,55 @@
                     </div>
                 </div>
 
-                <table class="table-auto w-full">
+                <table class="table-auto w-full mt-3">
                     <thead>
                         <tr>
                             <th>Наименование товара и описание</th>
                             <th>Количество</th>
                             <th>Цена</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="3"
-                                class="text-right">
-                                Общая стоимость: {{ totalPrice }} ₽
+                            <td colspan="4"
+                                class="text-right pt-3">
+                                Общая стоимость: <span class="text-orange-500">{{ totalPrice }} ₽</span>
                             </td>
                         </tr>
                     </tfoot>
                     <tbody>
-                        <tr v-for="good in cartGoods" :key="'cart_' + good.uniqueId">
-                            <td>{{ good.unit.name }}</td>
+                        <tr v-for="good in cartGoods"
+                            :key="'cart_' + good.unit.uniqueId"
+                            class="text-sm">
+                            <td>
+                                <div class="w-full flex items-end">
+                                    <span>{{ good.unit.name }}</span>
+                                    <span class="flex-grow border-b border-dotted"></span>
+                                </div>
+                            </td>
                             <td>
                                 <input type="number"
-                                    min="1"
-                                    :max="good.unit.P"
-                                    step="1"
-                                    @input="getTotalPrice()"
-                                    v-model="good.quantity" />
+                                       min="1"
+                                       :max="good.unit.P"
+                                       step="1"
+                                       class="text-gray-600 w-[100px] text-center rounded-sm"
+                                       @input="getTotalPrice()"
+                                       v-model="good.quantity" />
                             </td>
                             <td>{{ countPositionPrice(priceInRoubles(good.unit.C), good.quantity) }} ₽</td>
+                            <td class="text-right">
+                                <button type="button"
+                                        @click="removeGoodFromCart(good.unit.uniqueId)">
+                                    Удалить
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <!--Footer-->
-                <div class="flex justify-end pt-2">
-                    <button class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2">Action</button>
-                    <button class="modal-close px-4 bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Продолжить покупки</button>
+                <div class="flex justify-start pt-2">
+                    <button class="modal-close px-4 bg-slate-800 p-3 rounded-lg text-white hover:bg-indigo-400">Продолжить покупки</button>
                 </div>
                 
             </div>
@@ -71,7 +83,7 @@ export default {
       'toggleCart'
   ],
   setup() {
-    const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods } = fetchCartGoods();
+    const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods, removeGoodFromCart } = fetchCartGoods();
 
     onMounted(() => {
       getCartGoods();
@@ -82,21 +94,26 @@ export default {
       cartGoods,
       getTotalPrice,
       reloadCartGoods,
+      removeGoodFromCart,
       totalPrice
     };
   },
   methods: {
+    // Прячем корзину
     clickCart() {
       this.$emit('toggleCart');
     },
+    // Считаем стоимость позиции
     countPositionPrice(price, quantity) {
         return price * quantity;
     },
+    // Конвертируем цену в рубли
     priceInRoubles(price) {
         return countPrice.priceInRoubles(price);
     }
   },
   watch: {
+      // Наблюдаем за ручным вводом количества товара
       cartGoods: { 
           handler: function(newValue) {
             this.reloadCartGoods(newValue);
