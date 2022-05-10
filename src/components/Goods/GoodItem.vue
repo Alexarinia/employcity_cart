@@ -6,10 +6,20 @@
     <div class="ml-4 flex-shrink w-[100px] pr-4">
         <div class="rounded p-3 bg-slate-700">{{ priceInRoubles }}</div>
     </div>
+    <div class="ml-1 flex-shrink w-[100px] pr-4">
+        <button type="button"
+                @click="addGoodToCart(good)"
+                class="rounded p-3 bg-slate-400"
+                v-text="isInCart() ? '+1' : 'Крзн'">
+        </button>
+    </div>
   </div>
 </template>
 
 <script>
+import { onMounted } from "vue";
+import fetchCartGoods from "@/store/cartGoods";
+import * as countPrice from "@/store/countPrice";
 
 export default {
   name: 'GoodsItem',
@@ -21,10 +31,30 @@ export default {
   props: {
     good: Object
   },
+  setup() {
+    const { cartGoods, getCartGoods, addGoodToCart } = fetchCartGoods();
+
+    onMounted(() => {
+      getCartGoods();
+    });
+
+    return {
+      cartGoods,
+      addGoodToCart
+    };
+  },
   computed: {
     priceInRoubles() {
-        return this.good.P * this.dollarRate;
+       return countPrice.priceInRoubles(this.good.P);
     }
+  },
+  methods: {
+      addToCart() {
+          this.$state.addCartGood(this.good);
+      },
+      isInCart() {
+        return (this.good.uniqueId in this.cartGoods);
+      }
   }
 }
 </script>
