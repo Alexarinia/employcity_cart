@@ -1,46 +1,82 @@
 import {reactive, toRefs} from 'vue';
+import * as countPrice from "@/store/countPrice";
 
+// Реактивная корзина для более простого подключения, чем прокидывание событий
 export const state = reactive({
     cartGoods: {},
+    totalPrice: 0,
+    // Удаление товаров с количеством 0
     checkEmptyGoodsInCart () {
-        state.cartGoods.forEach((value) => {
-            if(value.quantity === 0) {
-                value.remove();
+        if(Object.keys(state.cartGoods).length) {
+            for(let key in state.cartGoods) {
+                let good = state.cartGoods[key];
+                if(good.quantity === 0) {
+                    good.remove();
+                }
             }
-        });
+        }
+    },
+    countTotalPrice() {
+        let totalPrice = 0;
+
+        if(Object.keys(state.cartGoods).length) {
+            for(let key in state.cartGoods) {
+                let good = state.cartGoods[key];
+                totalPrice += good.unit.P * good.quantity;
+            }
+        }
+
+        state.totalPrice = countPrice.priceInRoubles(totalPrice);    
     }
 });
 
 export default function fetchCartGoods() {
+    // Вывод товаров корзины
     const getCartGoods = () => {
         return state.cartGoods;
     };
 
-    const addGoodToCart = (good) => {
+    // Полное обновление товаров корзины
+    const reloadCartGoods = (goods) => {
+        state.cartGoods = goods;
+        state.countTotalPrice();
+    };
+
+    // Вывод общей стоимости
+    const getTotalPrice = () => {
+        return state.totalPrice;
+    };
+
+    // Добавление товара в корзину
+    const addGoodToCart = (good, quantity = 1) => {
         if(! state.cartGoods[good.uniqueId]) {
             state.cartGoods[good.uniqueId] = {
-                'quantity': 1,
+                'quantity': quantity,
                 'unit' : good
             };
         } else {
-            ++state.cartGoods[good.uniqueId].quantity;
+            state.cartGoods[good.uniqueId].quantity += quantity;
         }
+
+        state.countTotalPrice();
     }
 
+    // Удаление товара из корзины
     const removeGoodFromCart = (good) => {
         if(state.cartGoods[good.uniqueId]) {
             --state.cartGoods[good.uniqueId].quantity;
         }
 
         state.checkEmptyGoodsInCart();
+        state.countTotalPrice();
     }
-
             
    return {
-       ...toRefs(state), // convert to refs when returning
+       ...toRefs(state),
        addGoodToCart,
-    //    checkEmptyGoodsInCart,
        getCartGoods,
+       getTotalPrice,
+       reloadCartGoods,
        removeGoodFromCart
      }
 }

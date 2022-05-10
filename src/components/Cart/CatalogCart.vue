@@ -2,7 +2,7 @@
     <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50" @click="clickCart"></div>
         
-        <div class="modal-container bg-white w-10/12 mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div class="modal-container bg-slate-600 text-gray-300 w-10/12 mx-auto rounded shadow-lg z-50 overflow-y-auto">
 
             <!-- Add margin if you want to see some of the overlay behind the modal-->
             <div class="modal-content py-4 text-left px-6">
@@ -11,7 +11,7 @@
                     <p class="text-2xl font-bold">Корзина</p>
                     <div class="modal-close cursor-pointer z-50"
                         @click="clickCart">
-                        <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                        <svg class="fill-current text-gray-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
                             <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
                         </svg>
                     </div>
@@ -25,11 +25,26 @@
                             <th>Цена</th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"
+                                class="text-right">
+                                Общая стоимость: {{ totalPrice }} ₽
+                            </td>
+                        </tr>
+                    </tfoot>
                     <tbody>
                         <tr v-for="good in cartGoods" :key="'cart_' + good.uniqueId">
                             <td>{{ good.unit.name }}</td>
-                            <td>{{ good.quantity }}</td>
-                            <td>{{ countPositionPrice(priceInRoubles(good.unit.P), good.quantity) }}</td>
+                            <td>
+                                <input type="number"
+                                    min="1"
+                                    :max="good.unit.P"
+                                    step="1"
+                                    @input="getTotalPrice()"
+                                    v-model="good.quantity" />
+                            </td>
+                            <td>{{ countPositionPrice(priceInRoubles(good.unit.C), good.quantity) }} ₽</td>
                         </tr>
                     </tbody>
                 </table>
@@ -56,14 +71,18 @@ export default {
       'toggleCart'
   ],
   setup() {
-    const { cartGoods, getCartGoods } = fetchCartGoods();
+    const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods } = fetchCartGoods();
 
     onMounted(() => {
       getCartGoods();
+      getTotalPrice();
     });
 
     return {
-      cartGoods
+      cartGoods,
+      getTotalPrice,
+      reloadCartGoods,
+      totalPrice
     };
   },
   methods: {
@@ -76,6 +95,14 @@ export default {
     priceInRoubles(price) {
         return countPrice.priceInRoubles(price);
     }
+  },
+  watch: {
+      cartGoods: { 
+          handler: function(newValue) {
+            this.reloadCartGoods(newValue);
+          },
+          deep: true
+      }
   }
 }
 </script>

@@ -7,7 +7,7 @@
         </a>
       </div>
       <div class="w-1/2 pr-0">
-        <div class="flex relative inline-block float-right">
+        <div class="flex relative float-right">
           <div class="relative text-sm text-gray-100">
             <button id="userButton" @click="clickCart" type="button" class="flex items-center focus:outline-none mr-3">
               Cart
