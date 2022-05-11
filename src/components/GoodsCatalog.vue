@@ -26,9 +26,6 @@ export default {
       goodsNamesContainer: goodsNamesContainer
     }
   },
-  props: {
-    msg: String
-  },
   computed: {
     // Собираем список товаров с сопоставленными параметрами
     goods() {
@@ -84,6 +81,8 @@ export default {
         } else {
           value.category = 'Без названия';
         }
+
+        value.uniqueId = value.G + '_' + value.T;
       });
 
       return goods;
