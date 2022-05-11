@@ -28,18 +28,22 @@ export default {
   setup() {
     const state = reactive({
       goods: null,
-      goodsNames: null
+      goodsNames: null,
+    // Собираем список параметров товаров
+      async fetchGoods() {
+        const response = await fetch('/jsondata/data.json');
+        state.goods = await response.json();
+      },
+      async fetchGoodsNames() {
+        const response = await fetch('/jsondata/names.json');
+        state.goodsNames = await response.json();
+      }
     });
 
     onMounted(async () => {
-      const response = await fetch('/jsondata/data.json');
-      state.goods = await response.json();
-
-    // Собираем список параметров товаров
-      const responseNames = await fetch('/jsondata/names.json');
-      state.goodsNames = await responseNames.json();
+      await state.fetchGoodsNames();
+      await state.fetchGoods();
     });
-
 
     return {
       state,
@@ -98,6 +102,13 @@ export default {
 
       return goods;
     }
+  },
+  mounted() {
+    this.fetchInterval = setInterval(async() => {
+        await this.state.fetchGoodsNames();
+        await this.state.fetchGoods();
+        console.log('fetch');
+    }, 15000);
   }
 }
 </script>
