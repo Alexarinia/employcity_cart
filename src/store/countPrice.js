@@ -6,6 +6,7 @@ export const state = reactive({
     setRandDollarRate () {
         state.dollarRate = Math.round(Math.random() * (80 - 20) + 20);
     },
+    // Конвертация цены из долларов в рубли (с округлением)
     getPriceInRoubles(dollarPrice) {
         return Math.round(dollarPrice * state.dollarRate);
     }

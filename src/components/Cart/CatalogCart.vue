@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <table class="table-auto w-full mt-3" v-if="cartIsEmpty()">
+                <table class="table-auto w-full mt-3 text-xs md:text-base" v-if="cartIsEmpty()">
                     <thead>
                         <tr>
                             <th>Наименование товара и описание</th>
@@ -36,7 +36,7 @@
                     <tbody>
                         <tr v-for="good in cartGoods"
                             :key="'cart_' + good.unit.uniqueId"
-                            class="text-sm">
+                            class="text-xs md:text-sm">
                             <td>
                                 <div class="w-full flex items-end">
                                     <span>{{ good.unit.name }}</span>
@@ -87,12 +87,16 @@ export default {
       'toggleCart'
   ],
   setup() {
+    // Загружаем реактивную корзину
     const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods, removeGoodFromCart } = fetchCartGoods();
+    // Загружаем пересчёт цены
     const { priceInRoubles } = fetchCountPrice();
 
     onMounted(() => {
-      getCartGoods();
-      getTotalPrice();
+        // Получаем список товаров в корзине
+        getCartGoods();
+        // Считаем итог
+        getTotalPrice();
     });
 
     return {
@@ -117,7 +121,7 @@ export default {
     countPositionPrice(price, quantity) {
         return price * quantity;
     },
-    // Ради валидации не используем v-model
+    // Ради валидации количества не используем v-model
     validateQuantity(event, max) {
         let quantity = parseInt(event.target.value, 10);
         if (event.target.value > parseInt(max, 10)) {

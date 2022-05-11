@@ -27,6 +27,7 @@ export default {
     'toggleCart'
   ],
   methods: {
+    // Клик на корзину
     clickCart() {
       this.$emit('toggleCart');
     }

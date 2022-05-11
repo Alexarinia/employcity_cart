@@ -6,7 +6,7 @@
     <div class="ml-4 flex-shrink text-xs">
         <div class="rounded p-3 bg-slate-700">{{ priceInRoubles(good.C) }} ₽</div>
     </div>
-    <div class="ml-1 flex-shrink w-[150px] text-xs">
+    <div class="ml-1 flex-shrink md:w-[120px] text-xs">
         <button type="button"
                 @click="addGoodToCart(good)"
                 class="rounded p-3 bg-slate-400 select-none disabled:opacity-50"
@@ -42,6 +42,7 @@ export default {
     };
   },
   computed: {
+    // Считаем количество товара в корзине
     quantityInCart() {
       if(this.good.uniqueId in this.cartGoods) {
         return this.cartGoods[this.good.uniqueId].quantity
@@ -51,6 +52,7 @@ export default {
     }
   },
   methods: {
+      // Добавляем товар в корзину
       addToCart() {
           this.$state.addCartGood(this.good);
       }
