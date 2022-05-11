@@ -22,11 +22,11 @@ export const state = reactive({
         if(Object.keys(state.cartGoods).length) {
             for(let key in state.cartGoods) {
                 let good = state.cartGoods[key];
-                totalPrice += good.unit.C * good.quantity;
+                totalPrice += countPrice.priceInRoubles(good.unit.C) * good.quantity;
             }
         }
 
-        state.totalPrice = countPrice.priceInRoubles(totalPrice);    
+        state.totalPrice = totalPrice;    
     }
 });
 

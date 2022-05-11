@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <table class="table-auto w-full mt-3">
+                <table class="table-auto w-full mt-3" v-if="cartIsEmpty()">
                     <thead>
                         <tr>
                             <th>Наименование товара и описание</th>
@@ -45,12 +45,12 @@
                             </td>
                             <td>
                                 <input type="number"
-                                       min="1"
+                                       :min="1"
                                        :max="good.unit.P"
                                        step="1"
                                        class="text-gray-600 w-[100px] text-center rounded-sm"
-                                       @input="getTotalPrice()"
-                                       v-model="good.quantity" />
+                                       @input="good.quantity = validateQuantity($event, good.unit.P)"
+                                       :value="good.quantity" />
                             </td>
                             <td>{{ countPositionPrice(priceInRoubles(good.unit.C), good.quantity) }} ₽</td>
                             <td class="text-right">
@@ -62,6 +62,10 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-else
+                     class="text-center p-4">
+                     Товаров в корзине пока нет
+                </div>
 
                 <div class="flex justify-start pt-2">
                     <button class="modal-close px-4 bg-slate-800 p-3 rounded-lg text-white hover:bg-indigo-400">Продолжить покупки</button>
@@ -99,6 +103,10 @@ export default {
     };
   },
   methods: {
+    // Определяем, пуста ли корзина
+    cartIsEmpty() {
+        return Object.keys(this.cartGoods).length;
+    },
     // Прячем корзину
     clickCart() {
       this.$emit('toggleCart');
@@ -110,6 +118,20 @@ export default {
     // Конвертируем цену в рубли
     priceInRoubles(price) {
         return countPrice.priceInRoubles(price);
+    },
+    // Ради валидации не используем v-model
+    validateQuantity(event, max) {
+        let quantity = event.target.value;
+        if (event.target.value > max) {
+            quantity = max;
+        } else if (event.target.value < 1) {
+            quantity = 1;
+        }
+
+        this.$forceUpdate();
+        this.getTotalPrice();
+
+        return quantity;
     }
   },
   watch: {
