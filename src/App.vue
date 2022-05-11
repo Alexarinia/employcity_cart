@@ -21,8 +21,7 @@ export default {
   },
   data() {
     return {
-      cartActive: false,
-      cartGoods: {}
+      cartActive: false
     };
   },
   methods: {
@@ -33,7 +32,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

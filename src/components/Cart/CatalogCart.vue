@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <table class="table-auto w-full mt-3" v-if="cartIsEmpty()">
+                <table class="table-auto w-full mt-3 text-xs md:text-base" v-if="cartIsEmpty()">
                     <thead>
                         <tr>
                             <th>Наименование товара и описание</th>
@@ -36,7 +36,7 @@
                     <tbody>
                         <tr v-for="good in cartGoods"
                             :key="'cart_' + good.unit.uniqueId"
-                            class="text-sm">
+                            class="text-xs md:text-sm">
                             <td>
                                 <div class="w-full flex items-end">
                                     <span>{{ good.unit.name }}</span>
@@ -79,7 +79,7 @@
 <script>
 import { onMounted } from "vue";
 import fetchCartGoods from "@/store/cartGoods";
-import * as countPrice from "@/store/countPrice";
+import fetchCountPrice from "@/store/countPrice";
 
 export default {
   name: 'CatalogCart',
@@ -87,11 +87,16 @@ export default {
       'toggleCart'
   ],
   setup() {
+    // Загружаем реактивную корзину
     const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods, removeGoodFromCart } = fetchCartGoods();
+    // Загружаем пересчёт цены
+    const { priceInRoubles } = fetchCountPrice();
 
     onMounted(() => {
-      getCartGoods();
-      getTotalPrice();
+        // Получаем список товаров в корзине
+        getCartGoods();
+        // Считаем итог
+        getTotalPrice();
     });
 
     return {
@@ -99,7 +104,8 @@ export default {
       getTotalPrice,
       reloadCartGoods,
       removeGoodFromCart,
-      totalPrice
+      totalPrice,
+      priceInRoubles
     };
   },
   methods: {
@@ -115,14 +121,10 @@ export default {
     countPositionPrice(price, quantity) {
         return price * quantity;
     },
-    // Конвертируем цену в рубли
-    priceInRoubles(price) {
-        return countPrice.priceInRoubles(price);
-    },
-    // Ради валидации не используем v-model
+    // Ради валидации количества не используем v-model
     validateQuantity(event, max) {
-        let quantity = event.target.value;
-        if (event.target.value > max) {
+        let quantity = parseInt(event.target.value, 10);
+        if (event.target.value > parseInt(max, 10)) {
             quantity = max;
         } else if (event.target.value < 1) {
             quantity = 1;
