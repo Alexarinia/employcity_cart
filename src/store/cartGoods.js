@@ -1,5 +1,5 @@
 import {reactive, toRefs} from 'vue';
-import * as countPrice from "@/store/countPrice";
+import { state as priceState} from "@/store/countPrice";
 
 // Реактивная корзина для более простого подключения, чем прокидывание событий
 export const state = reactive({
@@ -22,7 +22,7 @@ export const state = reactive({
         if(Object.keys(state.cartGoods).length) {
             for(let key in state.cartGoods) {
                 let good = state.cartGoods[key];
-                totalPrice += countPrice.priceInRoubles(good.unit.C) * good.quantity;
+                totalPrice += priceState.getPriceInRoubles(good.unit.C) * good.quantity;
             }
         }
 
@@ -51,11 +51,12 @@ export default function fetchCartGoods() {
     const addGoodToCart = (good, quantity = 1) => {
         if(! state.cartGoods[good.uniqueId]) {
             state.cartGoods[good.uniqueId] = {
-                'quantity': quantity,
+                'quantity': parseInt(quantity, 10),
                 'unit' : good
             };
+
         } else {
-            state.cartGoods[good.uniqueId].quantity += quantity;
+            state.cartGoods[good.uniqueId].quantity += parseInt(quantity, 10);
         }
 
         state.countTotalPrice();

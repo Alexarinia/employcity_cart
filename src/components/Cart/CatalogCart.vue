@@ -79,7 +79,7 @@
 <script>
 import { onMounted } from "vue";
 import fetchCartGoods from "@/store/cartGoods";
-import * as countPrice from "@/store/countPrice";
+import fetchCountPrice from "@/store/countPrice";
 
 export default {
   name: 'CatalogCart',
@@ -88,6 +88,7 @@ export default {
   ],
   setup() {
     const { cartGoods, totalPrice, getCartGoods, getTotalPrice, reloadCartGoods, removeGoodFromCart } = fetchCartGoods();
+    const { priceInRoubles } = fetchCountPrice();
 
     onMounted(() => {
       getCartGoods();
@@ -99,7 +100,8 @@ export default {
       getTotalPrice,
       reloadCartGoods,
       removeGoodFromCart,
-      totalPrice
+      totalPrice,
+      priceInRoubles
     };
   },
   methods: {
@@ -115,14 +117,10 @@ export default {
     countPositionPrice(price, quantity) {
         return price * quantity;
     },
-    // Конвертируем цену в рубли
-    priceInRoubles(price) {
-        return countPrice.priceInRoubles(price);
-    },
     // Ради валидации не используем v-model
     validateQuantity(event, max) {
-        let quantity = event.target.value;
-        if (event.target.value > max) {
+        let quantity = parseInt(event.target.value, 10);
+        if (event.target.value > parseInt(max, 10)) {
             quantity = max;
         } else if (event.target.value < 1) {
             quantity = 1;

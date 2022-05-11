@@ -11,9 +11,8 @@
 </template>
 
 <script>
-import goodsContainer from '@/jsondata/data.json';
-import goodsNamesContainer from '@/jsondata/names.json';
 import GoodsCategoryItem from '@/components/Goods/GoodsCategoryItem';
+import { onMounted, reactive } from "vue";
 
 export default {
   name: 'GoodsCatalog',
@@ -22,15 +21,35 @@ export default {
   },
   data() {
     return {
-      goodsContainer: goodsContainer,
-      goodsNamesContainer: goodsNamesContainer
+      goodsContainer: [],
+      goodsNamesContainer: []
     }
+  },
+  setup() {
+    const state = reactive({
+      goods: null,
+      goodsNames: null
+    });
+
+    onMounted(async () => {
+      const response = await fetch('/jsondata/data.json');
+      state.goods = await response.json();
+
+    // Собираем список параметров товаров
+      const responseNames = await fetch('/jsondata/names.json');
+      state.goodsNames = await responseNames.json();
+    });
+
+
+    return {
+      state,
+    };
   },
   computed: {
     // Собираем список товаров с сопоставленными параметрами
     goods() {
-      if(this.goodsContainer && this.goodsContainer.Value && this.goodsContainer.Value.Goods) {
-        return this.setGoodsNames(this.goodsContainer.Value.Goods);
+      if(this.state.goods && this.state.goods.Value && this.state.goods.Value.Goods && this.state.goodsNames) {
+        return this.setGoodsNames(this.state.goods.Value.Goods);
       } else {
         return [];
       }
@@ -56,28 +75,20 @@ export default {
       } else {
         return [];
       }
-    },
-    // Собираем список параметров товаров
-    goodsNames() {
-      if(this.goodsNamesContainer) {
-        return this.goodsNamesContainer;
-      } else {
-        return [];
-      }
     }
   },
   methods: {
     // Сопоставляем ID товара с группами и названиями
     setGoodsNames(goods) {
       goods.forEach((value) => {
-        if(this.goodsNames[value.G]) {
-          value.category = this.goodsNames[value.G].G;
+        if(this.state.goodsNames[value.G]) {
+          value.category = this.state.goodsNames[value.G].G;
         } else {
           value.category = 'Без категории';
         }
 
-        if(value.category && this.goodsNames[value.G].B[value.T]) {
-          value.name = this.goodsNames[value.G].B[value.T].N;
+        if(value.category && this.state.goodsNames[value.G].B[value.T]) {
+          value.name = this.state.goodsNames[value.G].B[value.T].N;
         } else {
           value.category = 'Без названия';
         }
