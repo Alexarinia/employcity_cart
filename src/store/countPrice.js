@@ -2,20 +2,9 @@ import {reactive, toRefs} from 'vue';
 
 export const state = reactive({
     dollarRate: 70,
-    // setDollarRate () {
-        
-    // },
-    countTotalPrice() {
-        let totalPrice = 0;
-
-        if(Object.keys(state.cartGoods).length) {
-            for(let key in state.cartGoods) {
-                let good = state.cartGoods[key];
-                totalPrice += state.getPriceInRoubles(good.unit.C) * good.quantity;
-            }
-        }
-
-        state.totalPrice = totalPrice;    
+    // Рандомный курс доллара от 20 до 80
+    setRandDollarRate () {
+        state.dollarRate = Math.round(Math.random() * (80 - 20) + 20);
     },
     getPriceInRoubles(dollarPrice) {
         return Math.round(dollarPrice * state.dollarRate);
@@ -33,7 +22,7 @@ export default function fetchCountPrice() {
         return state.getPriceInRoubles(dollarPrice);
     };
             
-   return {
+    return {
        ...toRefs(state),
        priceInRoubles,
        getDollarRate

@@ -13,6 +13,7 @@
 <script>
 import GoodsCategoryItem from '@/components/Goods/GoodsCategoryItem';
 import { onMounted, reactive } from "vue";
+import { state as priceState} from "@/store/countPrice";
 
 export default {
   name: 'GoodsCatalog',
@@ -107,7 +108,8 @@ export default {
     this.fetchInterval = setInterval(async() => {
         await this.state.fetchGoodsNames();
         await this.state.fetchGoods();
-        console.log('fetch');
+        priceState.setRandDollarRate();
+        console.log(`А доллар сегодня равен ${priceState.dollarRate}`);
     }, 15000);
   }
 }
