@@ -34,6 +34,7 @@ npm run serve
 
 ## Использованные ресурсы  
 [Vue.js](https://vuejs.org/) - фреймворк Vue 3  
+[Tailwind](https://tailwindcss.com/) - CSS-фреймворк
 https://www.tailwindtoolbox.com/components/modal - вёрстка корзины    
 https://www.tailwindtoolbox.com/templates/admin-template-night - общая тема  
 
